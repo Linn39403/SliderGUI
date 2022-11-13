@@ -16,29 +16,78 @@ namespace SliderGUI
     public partial class Form1 : Form
     {
         SerialPort mySerialPort;
-        string[] SliderStringArr = new string[8];
+        readonly static int NumOfSlider = 8;
+        private struct SliderGUI_t
+        {
+            public TrackBar[] TrackBarHandle;
+            public Label[] TrackBarLabel;
+            public Label[] TrackBarValue;
+            public string[] Cmd;
+        }
+        private SliderGUI_t SliderGUIComp;
+
         public Form1()
         {
             InitializeComponent();
-            SliderStringArr[0] = "H0:" + labelP0Value.Text + "T";
-            SliderStringArr[1] = "H1:" + labelP1Value.Text + "T";
-            SliderStringArr[2] = "H2:" + labelP2Value.Text + "T";
-            SliderStringArr[3] = "H3:" + labelP3Value.Text + "T";
-            SliderStringArr[4] = "H4:" + labelP4Value.Text + "T";
-            SliderStringArr[5] = "H5:" + labelP5Value.Text + "T";
-            SliderStringArr[6] = "H6:" + labelP6Value.Text + "T";
-            SliderStringArr[7] = "H7:" + labelP7Value.Text + "T";
+            SliderGUIComp.TrackBarHandle = new TrackBar[NumOfSlider];
+            SliderGUIComp.TrackBarLabel = new Label[NumOfSlider];
+            SliderGUIComp.TrackBarValue = new Label[NumOfSlider];
+            SliderGUIComp.Cmd = new string[NumOfSlider];
+            SliderGUIInit();
         }
 
-        private void comboBoxSerialPort_MouseClick(object sender, MouseEventArgs e)
+        private void SliderGUIInit()
+        {
+            int XDistance = 50;
+            for(int i=0; i < NumOfSlider; i++)
+            {
+                /* TrackBar */
+                SliderGUIComp.TrackBarHandle[i] = new TrackBar();
+                SliderGUIComp.TrackBarHandle[i].Size = new System.Drawing.Size(70, 430);
+                SliderGUIComp.TrackBarHandle[i].AutoSize = false;
+                SliderGUIComp.TrackBarHandle[i].Orientation = Orientation.Vertical;
+                SliderGUIComp.TrackBarHandle[i].Minimum = 0;
+                SliderGUIComp.TrackBarHandle[i].Maximum = 20;
+                SliderGUIComp.TrackBarHandle[i].TickStyle = TickStyle.Both;
+                SliderGUIComp.TrackBarHandle[i].TickFrequency = 0; // 0 means no marks 
+                SliderGUIComp.TrackBarHandle[i].Location = new System.Drawing.Point(XDistance, 100);
+                SliderGUIComp.TrackBarHandle[i].Name = i.ToString();
+                this.mainPanel.Controls.Add(SliderGUIComp.TrackBarHandle[i]);
+                SliderGUIComp.TrackBarHandle[i].Scroll += new System.EventHandler(this.TrackBarScrollEvt);
+
+                /* TrackBar Title */
+                SliderGUIComp.TrackBarLabel[i] = new Label();
+                SliderGUIComp.TrackBarLabel[i].Size = new System.Drawing.Size(40, 30);
+                SliderGUIComp.TrackBarLabel[i].Text = "P" + i.ToString();
+                SliderGUIComp.TrackBarLabel[i].Location = new System.Drawing.Point(XDistance + 10, 80);
+                this.mainPanel.Controls.Add(SliderGUIComp.TrackBarLabel[i]);
+
+                /* TrackBar Value */
+                SliderGUIComp.TrackBarValue[i] = new Label();
+                SliderGUIComp.TrackBarValue[i].Size = new System.Drawing.Size(40, 30);
+                SliderGUIComp.TrackBarValue[i].Text = string.Format("{0:0.0}", MapScrollVal(SliderGUIComp.TrackBarHandle[i].Value.ToString()));
+                SliderGUIComp.TrackBarValue[i].Location = new System.Drawing.Point(XDistance + 10, 550);
+                this.mainPanel.Controls.Add(SliderGUIComp.TrackBarValue[i]);
+
+                SliderGUIComp.Cmd[i] = string.Format("H{0}:{1}T", i, SliderGUIComp.TrackBarValue[i].Text);
+
+                XDistance += 100;            
+            }
+            this.Refresh();
+            comboBoxBaudRateInit();
+            SetDefaultValues();
+            comboBoxSerialPortInit();
+        }
+
+        private void comboBoxSerialPortInit()
         {
             comboBoxSerialPort.Items.Clear();
             comboBoxSerialPort.Items.AddRange(SerialPort.GetPortNames());
+            comboBoxSerialPort.SelectedIndex = 0;
         }
 
-        private void comboBoxBaudRate_MouseClick(object sender, MouseEventArgs e)
+        private void comboBoxBaudRateInit()
         {
-            //Initialize Baud Rate ComboBox
             comboBoxBaudRate.Items.Clear();
             comboBoxBaudRate.Items.Add("9600");
             comboBoxBaudRate.Items.Add("14400");
@@ -48,6 +97,13 @@ namespace SliderGUI
             comboBoxBaudRate.Items.Add("57600");
             comboBoxBaudRate.Items.Add("115200");
             comboBoxBaudRate.Items.Add("230400");
+            comboBoxBaudRate.SelectedIndex = 0;
+        }
+
+        private void comboBoxSerialPort_MouseClick(object sender, MouseEventArgs e)
+        {
+            comboBoxSerialPort.Items.Clear();
+            comboBoxSerialPort.Items.AddRange(SerialPort.GetPortNames());
         }
 
         private void buttonConnect_MouseClick(object sender, MouseEventArgs e)
@@ -61,7 +117,8 @@ namespace SliderGUI
                 try
                 {
                     mySerialPort.Open();
-                    foreach (string sliderString in SliderStringArr)
+                    //foreach (string sliderString in SliderStringArr)
+                    foreach (string sliderString in SliderGUIComp.Cmd)
                     {
                         SliderStringTemp += sliderString;
                     }
@@ -116,60 +173,25 @@ namespace SliderGUI
             }
         }
 
-        private void trackBarP0_Scroll(object sender, EventArgs e)
+        private void SetDefaultValues()
         {
-            labelP0Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP0.Value.ToString()));
-            SliderStringArr[0] = "H0:" + labelP0Value.Text + "T";
-            WriteSerialData(SliderStringArr[0]);
+            for(int i=0; i< NumOfSlider; i++)
+            {
+                SliderGUIComp.TrackBarHandle[i].Value = 10;
+            }
+        }
+        private void TrackBarScrollEvt(object sender, EventArgs e)
+        {
+            string TrackBarName = ((System.Windows.Forms.Control)sender).Name;
+            int Idx = Int32.Parse(TrackBarName);
+            SliderGUIComp.TrackBarValue[Idx].Text = string.Format("{0:0.0}", MapScrollVal(SliderGUIComp.TrackBarHandle[Idx].Value.ToString()));
+            SliderGUIComp.Cmd[Idx] = string.Format("H{0}:{1}T", TrackBarName, SliderGUIComp.TrackBarHandle[Idx].Value.ToString());
+            WriteSerialData(SliderGUIComp.Cmd[Idx]);
         }
 
-        private void trackBarP1_Scroll(object sender, EventArgs e)
+        private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            labelP1Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP1.Value.ToString()));
-            SliderStringArr[1] = "H1:" + labelP1Value.Text + "T";
-            WriteSerialData(SliderStringArr[1]);
-        }
-
-        private void trackBarP2_Scroll(object sender, EventArgs e)
-        {
-            labelP2Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP2.Value.ToString()));
-            SliderStringArr[2] = "H2:" + labelP2Value.Text + "T";
-            WriteSerialData(SliderStringArr[2]);
-        }
-
-        private void trackBarP3_Scroll(object sender, EventArgs e)
-        {
-            labelP3Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP3.Value.ToString()));
-            SliderStringArr[3] = "H3:" + labelP3Value.Text + "T";
-            WriteSerialData(SliderStringArr[3]);
-        }
-
-        private void trackBarP4_Scroll(object sender, EventArgs e)
-        {
-            labelP4Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP4.Value.ToString()));
-            SliderStringArr[4] = "H4:" + labelP4Value.Text + "T";
-            WriteSerialData(SliderStringArr[4]);
-        }
-
-        private void trackBarP5_Scroll(object sender, EventArgs e)
-        {
-            labelP5Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP5.Value.ToString()));
-            SliderStringArr[5] = "H5:" + labelP5Value.Text + "T";
-            WriteSerialData(SliderStringArr[5]);
-        }
-
-        private void trackBarP6_Scroll(object sender, EventArgs e)
-        {
-            labelP6Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP6.Value.ToString()));
-            SliderStringArr[6] = "H6:" + labelP6Value.Text + "T";
-            WriteSerialData(SliderStringArr[6]);
-        }
-
-        private void trackBarP7_Scroll(object sender, EventArgs e)
-        {
-            labelP7Value.Text = string.Format("{0:0.0}", MapScrollVal(trackBarP7.Value.ToString()));
-            SliderStringArr[7] = "H7:" + labelP7Value.Text + "T";
-            WriteSerialData(SliderStringArr[7]);
+            SetDefaultValues();
         }
     }
 }
