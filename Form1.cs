@@ -17,6 +17,7 @@ namespace SliderGUI
     {
         SerialPort mySerialPort;
         readonly static int NumOfSlider = 8;
+        readonly static int TrackBarMinVal = 0, TrackBarMaxVal = 20;
         private struct SliderGUI_t
         {
             public TrackBar[] TrackBarHandle;
@@ -25,6 +26,29 @@ namespace SliderGUI
             public string[] Cmd;
         }
         private SliderGUI_t SliderGUIComp;
+        optionsForm optionForm;
+
+        public int getNumberofSlider()
+        {
+            return NumOfSlider;
+        }
+
+        public int getTrackBarMinVal()
+        {
+            return TrackBarMinVal;
+        }
+
+        public int getTrackBarMaxVal()
+        {
+            return TrackBarMaxVal;
+        }
+
+        //public void TrackBarParameterConfig(int index, int min, int initVal, int max, float stepSize)
+        public void TrackBarParameterConfig(int index, int min, int max)
+        {
+            SliderGUIComp.TrackBarHandle[index].Minimum = min;
+            SliderGUIComp.TrackBarHandle[index].Maximum = max;
+        }
 
         public Form1()
         {
@@ -46,8 +70,8 @@ namespace SliderGUI
                 SliderGUIComp.TrackBarHandle[i].Size = new System.Drawing.Size(70, 430);
                 SliderGUIComp.TrackBarHandle[i].AutoSize = false;
                 SliderGUIComp.TrackBarHandle[i].Orientation = Orientation.Vertical;
-                SliderGUIComp.TrackBarHandle[i].Minimum = 0;
-                SliderGUIComp.TrackBarHandle[i].Maximum = 20;
+                SliderGUIComp.TrackBarHandle[i].Minimum = TrackBarMinVal;
+                SliderGUIComp.TrackBarHandle[i].Maximum = TrackBarMaxVal;
                 SliderGUIComp.TrackBarHandle[i].TickStyle = TickStyle.Both;
                 SliderGUIComp.TrackBarHandle[i].TickFrequency = 0; // 0 means no marks 
                 SliderGUIComp.TrackBarHandle[i].Location = new System.Drawing.Point(XDistance, 100);
@@ -177,7 +201,9 @@ namespace SliderGUI
         {
             for(int i=0; i< NumOfSlider; i++)
             {
-                SliderGUIComp.TrackBarHandle[i].Value = 10;
+                SliderGUIComp.TrackBarHandle[i].Value =   TrackBarMinVal + ( TrackBarMaxVal) / 2;
+                SliderGUIComp.TrackBarHandle[i].Minimum = TrackBarMinVal;
+                SliderGUIComp.TrackBarHandle[i].Maximum = TrackBarMaxVal;
             }
         }
         private void TrackBarScrollEvt(object sender, EventArgs e)
@@ -192,6 +218,15 @@ namespace SliderGUI
         private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetDefaultValues();
+        }
+
+        private void setNewValuesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            optionForm = new optionsForm(this); //new form for slider parameters configuration
+            if ( optionForm != null )
+            {            
+                optionForm.Show();
+            }
         }
     }
 }

@@ -87,13 +87,14 @@ namespace SliderGUI
             // setNewValuesToolStripMenuItem
             // 
             this.setNewValuesToolStripMenuItem.Name = "setNewValuesToolStripMenuItem";
-            this.setNewValuesToolStripMenuItem.Size = new System.Drawing.Size(255, 36);
+            this.setNewValuesToolStripMenuItem.Size = new System.Drawing.Size(270, 36);
             this.setNewValuesToolStripMenuItem.Text = "Set New Values";
+            this.setNewValuesToolStripMenuItem.Click += new System.EventHandler(this.setNewValuesToolStripMenuItem_Click);
             // 
             // restoreDefaultsToolStripMenuItem
             // 
             this.restoreDefaultsToolStripMenuItem.Name = "restoreDefaultsToolStripMenuItem";
-            this.restoreDefaultsToolStripMenuItem.Size = new System.Drawing.Size(255, 36);
+            this.restoreDefaultsToolStripMenuItem.Size = new System.Drawing.Size(270, 36);
             this.restoreDefaultsToolStripMenuItem.Text = "Restore Defaults";
             this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.restoreDefaultsToolStripMenuItem_Click);
             // 
