@@ -33,21 +33,26 @@ namespace SliderGUI
             return NumOfSlider;
         }
 
-        public int getTrackBarMinVal()
-        {
-            return TrackBarMinVal;
+        public int getTrackBarMinVal(int index)
+        {        
+            return SliderGUIComp.TrackBarHandle[index].Minimum;
         }
 
-        public int getTrackBarMaxVal()
+        public int getTrackBarMaxVal(int index)
         {
-            return TrackBarMaxVal;
+            return SliderGUIComp.TrackBarHandle[index].Maximum;
         }
 
-        //public void TrackBarParameterConfig(int index, int min, int initVal, int max, float stepSize)
-        public void TrackBarParameterConfig(int index, int min, int max)
+        public int getTrackBarVal(int index)
+        {
+            return SliderGUIComp.TrackBarHandle[index].Value;
+        }
+
+        public void TrackBarParameterConfig(int index, int min, int max, int val)
         {
             SliderGUIComp.TrackBarHandle[index].Minimum = min;
             SliderGUIComp.TrackBarHandle[index].Maximum = max;
+            SliderGUIComp.TrackBarHandle[index].Value = val;
         }
 
         public Form1()
@@ -70,6 +75,7 @@ namespace SliderGUI
                 SliderGUIComp.TrackBarHandle[i].Size = new System.Drawing.Size(70, 430);
                 SliderGUIComp.TrackBarHandle[i].AutoSize = false;
                 SliderGUIComp.TrackBarHandle[i].Orientation = Orientation.Vertical;
+                SliderGUIComp.TrackBarHandle[i].Value = 0;
                 SliderGUIComp.TrackBarHandle[i].Minimum = TrackBarMinVal;
                 SliderGUIComp.TrackBarHandle[i].Maximum = TrackBarMaxVal;
                 SliderGUIComp.TrackBarHandle[i].TickStyle = TickStyle.Both;
@@ -93,7 +99,7 @@ namespace SliderGUI
                 SliderGUIComp.TrackBarValue[i].Location = new System.Drawing.Point(XDistance + 10, 550);
                 this.mainPanel.Controls.Add(SliderGUIComp.TrackBarValue[i]);
 
-                SliderGUIComp.Cmd[i] = string.Format("H{0}:{1}T", i, SliderGUIComp.TrackBarValue[i].Text);
+                SliderGUIComp.Cmd[i] = "H" + i.ToString() + ":" + SliderGUIComp.TrackBarHandle[i].Value.ToString() + "T"; //string.Format("H{0}:{1}T", i, SliderGUIComp.TrackBarValue[i].Text);
 
                 XDistance += 100;            
             }
@@ -121,7 +127,7 @@ namespace SliderGUI
             comboBoxBaudRate.Items.Add("57600");
             comboBoxBaudRate.Items.Add("115200");
             comboBoxBaudRate.Items.Add("230400");
-            comboBoxBaudRate.SelectedIndex = 0;
+            comboBoxBaudRate.SelectedIndex = 6;
         }
 
         private void comboBoxSerialPort_MouseClick(object sender, MouseEventArgs e)
@@ -211,7 +217,7 @@ namespace SliderGUI
             string TrackBarName = ((System.Windows.Forms.Control)sender).Name;
             int Idx = Int32.Parse(TrackBarName);
             SliderGUIComp.TrackBarValue[Idx].Text = string.Format("{0:0.0}", MapScrollVal(SliderGUIComp.TrackBarHandle[Idx].Value.ToString()));
-            SliderGUIComp.Cmd[Idx] = string.Format("H{0}:{1}T", TrackBarName, SliderGUIComp.TrackBarHandle[Idx].Value.ToString());
+            SliderGUIComp.Cmd[Idx] = "H" + TrackBarName + ":" + SliderGUIComp.TrackBarHandle[Idx].Value.ToString() + "T" + "\r\n";
             WriteSerialData(SliderGUIComp.Cmd[Idx]);
         }
 

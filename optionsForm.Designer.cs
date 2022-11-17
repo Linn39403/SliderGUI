@@ -41,6 +41,8 @@ namespace SliderGUI
             this.textBoxOFSliderMin = new System.Windows.Forms.TextBox();
             this.labelOFMaxVal = new System.Windows.Forms.Label();
             this.textBoxOFSliderMax = new System.Windows.Forms.TextBox();
+            this.labelOFInitialVal = new System.Windows.Forms.Label();
+            this.textBoxOFSliderInitVal = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,6 +54,8 @@ namespace SliderGUI
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.textBoxOFSliderInitVal);
+            this.panel1.Controls.Add(this.labelOFInitialVal);
             this.panel1.Controls.Add(this.textBoxOFSliderMax);
             this.panel1.Controls.Add(this.labelOFMaxVal);
             this.panel1.Controls.Add(this.textBoxOFSliderMin);
@@ -62,12 +66,12 @@ namespace SliderGUI
             this.panel1.Controls.Add(this.labelOFSelectSlider);
             this.panel1.Location = new System.Drawing.Point(13, 13);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(515, 629);
+            this.panel1.Size = new System.Drawing.Size(386, 553);
             this.panel1.TabIndex = 0;
             // 
             // buttonOFApply
             // 
-            this.buttonOFApply.Location = new System.Drawing.Point(306, 565);
+            this.buttonOFApply.Location = new System.Drawing.Point(248, 472);
             this.buttonOFApply.Name = "buttonOFApply";
             this.buttonOFApply.Size = new System.Drawing.Size(104, 38);
             this.buttonOFApply.TabIndex = 3;
@@ -77,12 +81,13 @@ namespace SliderGUI
             // 
             // buttonOFClose
             // 
-            this.buttonOFClose.Location = new System.Drawing.Point(26, 565);
+            this.buttonOFClose.Location = new System.Drawing.Point(26, 472);
             this.buttonOFClose.Name = "buttonOFClose";
             this.buttonOFClose.Size = new System.Drawing.Size(104, 38);
             this.buttonOFClose.TabIndex = 2;
             this.buttonOFClose.Text = "Close";
             this.buttonOFClose.UseVisualStyleBackColor = true;
+            this.buttonOFClose.Click += new System.EventHandler(this.buttonOFClose_Click);
             // 
             // comboBoxOFSelectSlider
             // 
@@ -91,6 +96,7 @@ namespace SliderGUI
             this.comboBoxOFSelectSlider.Name = "comboBoxOFSelectSlider";
             this.comboBoxOFSelectSlider.Size = new System.Drawing.Size(151, 28);
             this.comboBoxOFSelectSlider.TabIndex = 1;
+            this.comboBoxOFSelectSlider.SelectedIndexChanged += new System.EventHandler(this.comboBoxOFSelectSlider_SelectedIndexChanged);
             // 
             // labelOFSelectSlider
             // 
@@ -106,7 +112,7 @@ namespace SliderGUI
             // 
             this.labelOFMinVal.AutoSize = true;
             this.labelOFMinVal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelOFMinVal.Location = new System.Drawing.Point(21, 117);
+            this.labelOFMinVal.Location = new System.Drawing.Point(27, 117);
             this.labelOFMinVal.Name = "labelOFMinVal";
             this.labelOFMinVal.Size = new System.Drawing.Size(97, 25);
             this.labelOFMinVal.TabIndex = 4;
@@ -124,7 +130,7 @@ namespace SliderGUI
             // 
             this.labelOFMaxVal.AutoSize = true;
             this.labelOFMaxVal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelOFMaxVal.Location = new System.Drawing.Point(27, 234);
+            this.labelOFMaxVal.Location = new System.Drawing.Point(27, 252);
             this.labelOFMaxVal.Name = "labelOFMaxVal";
             this.labelOFMaxVal.Size = new System.Drawing.Size(103, 25);
             this.labelOFMaxVal.TabIndex = 6;
@@ -133,17 +139,35 @@ namespace SliderGUI
             // textBoxOFSliderMax
             // 
             this.textBoxOFSliderMax.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxOFSliderMax.Location = new System.Drawing.Point(185, 231);
+            this.textBoxOFSliderMax.Location = new System.Drawing.Point(185, 247);
             this.textBoxOFSliderMax.Name = "textBoxOFSliderMax";
             this.textBoxOFSliderMax.Size = new System.Drawing.Size(151, 30);
             this.textBoxOFSliderMax.TabIndex = 7;
+            // 
+            // labelOFInitialVal
+            // 
+            this.labelOFInitialVal.AutoSize = true;
+            this.labelOFInitialVal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelOFInitialVal.Location = new System.Drawing.Point(27, 183);
+            this.labelOFInitialVal.Name = "labelOFInitialVal";
+            this.labelOFInitialVal.Size = new System.Drawing.Size(118, 25);
+            this.labelOFInitialVal.TabIndex = 8;
+            this.labelOFInitialVal.Text = "Initial Value:";
+            // 
+            // textBoxOFSliderInitVal
+            // 
+            this.textBoxOFSliderInitVal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxOFSliderInitVal.Location = new System.Drawing.Point(185, 178);
+            this.textBoxOFSliderInitVal.Name = "textBoxOFSliderInitVal";
+            this.textBoxOFSliderInitVal.Size = new System.Drawing.Size(151, 30);
+            this.textBoxOFSliderInitVal.TabIndex = 9;
             // 
             // optionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(540, 649);
+            this.ClientSize = new System.Drawing.Size(408, 577);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -168,5 +192,7 @@ namespace SliderGUI
         private System.Windows.Forms.TextBox textBoxOFSliderMax;
         private System.Windows.Forms.Label labelOFMaxVal;
         private System.Windows.Forms.TextBox textBoxOFSliderMin;
+        private System.Windows.Forms.Label labelOFInitialVal;
+        private System.Windows.Forms.TextBox textBoxOFSliderInitVal;
     }
 }
